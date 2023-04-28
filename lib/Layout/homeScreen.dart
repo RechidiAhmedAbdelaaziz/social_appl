@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
         var cubit = SocialCubit.get(context);
         return Scaffold(
           appBar: AppBar(
+            elevation: 0,
             title: const Text('News Feed'),
           ),
           body: ConditionalBuilder(
@@ -26,7 +27,7 @@ class HomeScreen extends StatelessWidget {
             builder: (context) {
               return Column(
                 children: [
-                  if (FirebaseAuth.instance.currentUser?.emailVerified == false )
+                  if (FirebaseAuth.instance.currentUser?.emailVerified == false)
                     Container(
                       height: 50,
                       color: Colors.amber.withOpacity(.6),
@@ -46,10 +47,8 @@ class HomeScreen extends StatelessWidget {
                               function: () {
                                 FirebaseAuth.instance.currentUser
                                     ?.sendEmailVerification()
-                                    .then((value) {
-                                      
-                                  
-                                }).catchError((error){});
+                                    .then((value) {})
+                                    .catchError((error) {});
                               },
                               text: 'Verify')
                         ],

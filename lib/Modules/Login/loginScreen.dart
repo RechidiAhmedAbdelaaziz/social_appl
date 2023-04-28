@@ -25,7 +25,7 @@ class LoginScreen extends StatelessWidget {
           if (state is LoginSuccessState) {
             CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
               uId = state.uId;
-              navigateTo(context: context, widget: HomeScreen());
+              replaceWith(context: context, widget: HomeScreen());
             });
           }
         },
