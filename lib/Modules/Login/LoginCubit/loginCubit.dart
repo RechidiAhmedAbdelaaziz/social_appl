@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:social_appl/Modules/Login/LoginCubit/loginStates.dart';
-import 'package:social_appl/Moldels/login_model.dart';
 
 class LoginCubit extends Cubit<LoginStates> {
   LoginCubit() : super(LoginInitialState());
@@ -15,14 +14,14 @@ class LoginCubit extends Cubit<LoginStates> {
     emit(LoginPassVisibilityState());
   }
 
-  late LoginModel loginModel;
+
   void userLogin({required String email, required String password}) {
     emit(LoginLoadingState());
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       emit(LoginErrorState(value.user!.uid));
-      emit(LoginSuccessState());
+      emit(LoginSuccessState(value.user!.uid));
     }).catchError((error) {
       print('Error is ${error.toString()}');
       emit(LoginErrorState(error.toString()));

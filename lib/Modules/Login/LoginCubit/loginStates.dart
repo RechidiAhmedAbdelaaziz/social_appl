@@ -2,6 +2,7 @@
 
 
 
+
 abstract class LoginStates {}
 
 class LoginInitialState extends LoginStates {}
@@ -16,5 +17,6 @@ class LoginErrorState extends LoginStates {
 }
 
 class LoginSuccessState extends LoginStates {
-  
+  String uId;
+  LoginSuccessState(this.uId);
 }

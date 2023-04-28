@@ -2,10 +2,13 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_appl/Layout/homeScreen.dart';
 import 'package:social_appl/Modules/Login/loginScreen.dart';
 import 'package:social_appl/Modules/Register/RegisterCubit/registerCubit.dart';
 import 'package:social_appl/Modules/Register/RegisterCubit/registerStates.dart';
 import 'package:social_appl/Shared/Compenents/compenents.dart';
+import 'package:social_appl/Shared/Compenents/constants.dart';
+import 'package:social_appl/Shared/Network/Local/cache_helper.dart';
 
 class RegisterScreen extends StatelessWidget {
   String err;
@@ -20,7 +23,15 @@ class RegisterScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is CreatUserSuccessState) {
+            CacheHelper.saveData(key: 'uId', value: state.user.uId).then((value) {
+              uId = state.user.uId;
+              navigateTo(context: context, widget: HomeScreen());
+            });
+            
+          }
+        },
         builder: (context, state) {
           var formkey = GlobalKey<FormState>();
           return Scaffold(
@@ -134,7 +145,7 @@ class RegisterScreen extends StatelessWidget {
                           height: 35,
                         ),
                         ConditionalBuilder(
-                          condition: state is! RegisterLoadingState,
+                          condition: state is! RegisterLoadingState && state is! CreatUserLoadingState,
                           builder: (context) => defaultButton(
                               function: () {
                                 if (formkey.currentState?.validate() == true) {

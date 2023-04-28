@@ -3,10 +3,13 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_appl/Layout/homeScreen.dart';
 import 'package:social_appl/Modules/Login/LoginCubit/loginCubit.dart';
 import 'package:social_appl/Modules/Login/LoginCubit/loginStates.dart';
 import 'package:social_appl/Modules/Register/registerScreen.dart';
 import 'package:social_appl/Shared/Compenents/compenents.dart';
+import 'package:social_appl/Shared/Compenents/constants.dart';
+import 'package:social_appl/Shared/Network/Local/cache_helper.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -19,8 +22,11 @@ class LoginScreen extends StatelessWidget {
       create: (context) => LoginCubit(),
       child: BlocConsumer<LoginCubit, LoginStates>(
         listener: (context, state) {
-          if (state is LoginErrorState) {
-            navigateTo(context: context, widget: RegisterScreen(state.error));
+          if (state is LoginSuccessState) {
+            CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
+              uId = state.uId;
+              navigateTo(context: context, widget: HomeScreen());
+            });
           }
         },
         builder: (context, state) {
@@ -127,7 +133,7 @@ class LoginScreen extends StatelessWidget {
                                 onPressed: () {
                                   navigateTo(
                                       context: context,
-                                      widget:  RegisterScreen('a'));
+                                      widget: RegisterScreen('a'));
                                 },
                                 child: const Text('Register'))
                           ],

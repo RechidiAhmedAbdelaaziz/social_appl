@@ -3,10 +3,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_appl/Modules/Login/LoginCubit/loginCubit.dart';
-import 'package:social_appl/Modules/Login/LoginCubit/loginStates.dart';
+import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
+import 'package:social_appl/Layout/SocialApp/socialStates.dart';
+import 'package:social_appl/Layout/homeScreen.dart';
 import 'package:social_appl/Modules/Login/loginScreen.dart';
 import 'package:social_appl/Shared/Compenents/blocobserver.dart';
+import 'package:social_appl/Shared/Compenents/constants.dart';
 import 'package:social_appl/Shared/Network/Local/cache_helper.dart';
 import 'package:social_appl/Shared/Network/Remote/diohelper.dart';
 import 'package:social_appl/Shared/Styles/Themes/themes.dart';
@@ -17,33 +19,32 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  ).then((value) {
-    print('objllllllllect');
-  }).catchError((error) {
-    print('Error is ${error.toString()}');
-  });
-  // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  );
   Bloc.observer = MyBlocObserver();
   await DioHelper.init();
   await CacheHelper.init();
+  uId = CacheHelper.getData(key: 'uId');
+  Widget startWidget = uId != null ? LoginScreen():HomeScreen();
+ 
 
-  runApp(const MyApp());
+  runApp( MyApp(startWidget: startWidget,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  Widget startWidget;
+  MyApp({super.key , required this.startWidget});
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [BlocProvider(create: (context) => LoginCubit())],
-        child: BlocConsumer<LoginCubit, LoginStates>(
+        providers: [BlocProvider(create: (context) => SocialCubit())],
+        child: BlocConsumer<SocialCubit, SocialStates>(
             listener: (context, state) {},
             builder: (context, state) {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
-                home: const LoginScreen(),
+                home: startWidget,
                 theme: lightTheme,
                 darkTheme: darkTheme,
                 themeMode: ThemeMode.light,

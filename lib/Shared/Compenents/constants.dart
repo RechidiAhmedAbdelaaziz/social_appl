@@ -28,5 +28,5 @@ void printFullText({required String text}) {
   pattern.allMatches(text).forEach((element) => print(element.group(0)));
 }
 
-String? token = '';
+String? uId = '';
 String? userPassword = '';
