@@ -24,21 +24,24 @@ void main() async {
   await DioHelper.init();
   await CacheHelper.init();
   uId = CacheHelper.getData(key: 'uId');
-  Widget startWidget = uId != null ? LoginScreen():HomeScreen();
- 
+  Widget startWidget = uId != null ? LoginScreen() : HomeScreen();
 
-  runApp( MyApp(startWidget: startWidget,));
+  runApp(MyApp(
+    startWidget: startWidget,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   Widget startWidget;
-  MyApp({super.key , required this.startWidget});
-  
+  MyApp({super.key, required this.startWidget});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [BlocProvider(create: (context) => SocialCubit())],
+        providers: [
+          BlocProvider(create: (context) => SocialCubit()..getUserData())
+        ],
         child: BlocConsumer<SocialCubit, SocialStates>(
             listener: (context, state) {},
             builder: (context, state) {
