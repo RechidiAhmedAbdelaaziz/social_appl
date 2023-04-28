@@ -1,4 +1,7 @@
+// ignore_for_file: file_names
+
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
@@ -23,7 +26,7 @@ class HomeScreen extends StatelessWidget {
             builder: (context) {
               return Column(
                 children: [
-                  if (cubit.user?.isEmailVerfied == false)
+                  if (FirebaseAuth.instance.currentUser?.emailVerified == false )
                     Container(
                       height: 50,
                       color: Colors.amber.withOpacity(.6),
@@ -34,11 +37,21 @@ class HomeScreen extends StatelessWidget {
                             Icons.info_outline,
                             color: Colors.black,
                           ),
-                          const Expanded(child: Text('  please verify your email')),
+                          const Expanded(
+                              child: Text('  please verify your email')),
                           const SizedBox(
                             width: 50,
                           ),
-                          defaultTextButton(function: () {}, text: 'Verify')
+                          defaultTextButton(
+                              function: () {
+                                FirebaseAuth.instance.currentUser
+                                    ?.sendEmailVerification()
+                                    .then((value) {
+                                      
+                                  
+                                }).catchError((error){});
+                              },
+                              text: 'Verify')
                         ],
                       ),
                     )
