@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_appl/Shared/Compenents/compenents.dart';
 
 class NewPostScreen  extends StatelessWidget {
   
@@ -6,10 +7,8 @@ class NewPostScreen  extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Creat new post'),
-      ),
-
+      appBar: defaultAppBar(context,title: 'Create a post'),
+      
     );
   }
 }

@@ -5,8 +5,7 @@ class UserModel {
   late String? uId;
   late String? bio;
   late String? cover;
-  String? image =
-      'https://i.pinimg.com/564x/67/90/60/679060d15d1dbd809ff81fe1cbe60748.jpg';
+  String? image;
   
   late bool? isEmailVerfied;
   UserModel({

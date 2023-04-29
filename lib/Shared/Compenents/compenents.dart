@@ -63,7 +63,8 @@ Widget defaultButton({
   bool isUpperCase = true,
 }) {
   return Container(
-    width: width,height:height ,
+    width: width,
+    height: height,
     color: color,
     child: MaterialButton(
       onPressed: function,
@@ -71,3 +72,22 @@ Widget defaultButton({
     ),
   );
 }
+
+PreferredSizeWidget defaultAppBar(context,{
+   
+  String? title,
+  List<Widget>? actions,
+  
+}) =>
+    AppBar(
+      elevation: 0,
+      titleSpacing: 5.0,
+      title: Text('$title'),
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(Icons.arrow_back_ios_new),
+      ),
+      actions: actions,
+    );
