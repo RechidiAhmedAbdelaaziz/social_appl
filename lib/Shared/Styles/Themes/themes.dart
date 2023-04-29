@@ -26,6 +26,12 @@ ThemeData lightTheme = ThemeData(
     elevation: 22.6,
   ),
   textTheme: const TextTheme(
+    titleMedium: TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: Colors.black,
+      height: 1.3,
+    ),
     bodyLarge: TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.bold,
@@ -33,7 +39,6 @@ ThemeData lightTheme = ThemeData(
     ),
   ),
 );
-
 
 ThemeData darkTheme = ThemeData(
   primarySwatch: defaultColor,
@@ -60,6 +65,12 @@ ThemeData darkTheme = ThemeData(
     elevation: 12.6,
   ),
   textTheme: const TextTheme(
+    titleMedium: TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: Colors.white,
+      height: 1.3,
+    ),
     bodyLarge: TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.bold,

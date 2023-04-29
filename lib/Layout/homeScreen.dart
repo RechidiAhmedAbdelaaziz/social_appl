@@ -20,7 +20,17 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             elevation: 0,
-            title: const Text('News Feed'),
+            title: cubit.titles[cubit.currentIndex],
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.notifications),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.search),
+              ),
+            ],
           ),
           body: ConditionalBuilder(
             condition: cubit.user != null,
@@ -53,13 +63,38 @@ class HomeScreen extends StatelessWidget {
                               text: 'Verify')
                         ],
                       ),
-                    )
+                    ),
+                  cubit.screens[cubit.currentIndex],
                 ],
               );
             },
             fallback: (context) => const Center(
               child: CircularProgressIndicator(),
             ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: cubit.currentIndex,
+            onTap: (index) {
+              cubit.changeBottomNavScreen(index);
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat),
+                label: 'Chat',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.map),
+                label: 'Users',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+              )
+            ],
           ),
         );
       },

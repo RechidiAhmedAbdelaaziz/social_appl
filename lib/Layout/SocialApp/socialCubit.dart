@@ -17,16 +17,25 @@ class SocialCubit extends Cubit<SocialStates> {
   static SocialCubit get(context) => BlocProvider.of(context);
 
   int currentIndex = 0;
+  List<Text> titles = [
+    const Text('Home Feed'),
+    const Text('Chats'),
+    const Text('Users'),
+    const Text('Settings'),
+  ];
   List<Widget> screens = [
     FeedsScreen(),
     ChatsScreen(),
     UsersScreen(),
     SettingScreen(),
   ];
+  
   void changeBottomNavScreen(int index) {
     currentIndex = index;
     emit(ChangeBottomNavState());
   }
+
+
 
   UserModel? user;
   void getUserData() {
