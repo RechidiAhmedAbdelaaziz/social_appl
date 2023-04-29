@@ -22,7 +22,16 @@ class RegisterCubit extends Cubit<RegisterStates> {
     required String uId,
   }) {
     emit(CreatUserLoadingState());
-    var userModel = UserModel(email: email, name: name, phone: phone, uId: uId,isEmailVerfied: false);
+    var userModel = UserModel(
+      email: email,
+      name: name,
+      phone: phone,
+      uId: uId,
+      isEmailVerfied: false,
+      bio: 'my bio ...',
+      cover: 'https://img.freepik.com/free-photo/galaxy-nature-aesthetic-background-starry-sky-mountain-remixed-media_53876-126761.jpg?t=st=1682758831~exp=1682759431~hmac=b3bc11f87225eb03b7a4a2720ca1b883d9d65c8ef3f95f979dc21a9972b0ecd3',
+      image: 'https://i.pinimg.com/564x/1f/47/de/1f47de7568f6234db6e482f573cd3665.jpg',
+    );
     FirebaseFirestore.instance
         .collection('users')
         .doc(uId)

@@ -1,11 +1,11 @@
 // ignore_for_file: file_names
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
 import 'package:social_appl/Layout/SocialApp/socialStates.dart';
+import 'package:social_appl/Modules/Screens/Post/new_post_screen.dart';
 import 'package:social_appl/Shared/Compenents/compenents.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,7 +14,11 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is NewPostState) {
+          navigateTo(context: context, widget: NewPostScreen());
+        }
+      },
       builder: (context, state) {
         var cubit = SocialCubit.get(context);
         return Scaffold(
@@ -33,38 +37,39 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           body: ConditionalBuilder(
-            condition: cubit.user != null,
+            condition: true ,//cubit.user != null,
             builder: (context) {
               return Column(
                 children: [
-                  if (FirebaseAuth.instance.currentUser?.emailVerified == false)
-                    Container(
-                      height: 50,
-                      color: Colors.amber.withOpacity(.6),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.info_outline,
-                            color: Colors.black,
-                          ),
-                          const Expanded(
-                              child: Text('  please verify your email')),
-                          const SizedBox(
-                            width: 50,
-                          ),
-                          defaultTextButton(
-                              function: () {
-                                FirebaseAuth.instance.currentUser
-                                    ?.sendEmailVerification()
-                                    .then((value) {})
-                                    .catchError((error) {});
-                              },
-                              text: 'Verify')
-                        ],
-                      ),
-                    ),
-                  cubit.screens[cubit.currentIndex],
+                  // if (FirebaseAuth.instance.currentUser?.emailVerified == false)
+                  //   Container(
+                  //     height: 50,
+                  //     color: Colors.amber.withOpacity(.6),
+                  //     padding: const EdgeInsets.symmetric(horizontal: 20),
+                  //     child: Row(
+                  //       children: [
+                  //         const Icon(
+                  //           Icons.info_outline,
+                  //           color: Colors.black,
+                  //         ),
+                  //         const Expanded(
+                  //             child: Text('  please verify your email')),
+                  //         const SizedBox(
+                  //           width: 50,
+                  //         ),
+                  //         defaultTextButton(
+                  //             function: () {
+                  //               FirebaseAuth.instance.currentUser
+                  //                   ?.sendEmailVerification()
+                  //                   .then((value) {})
+                  //                   .catchError((error) {});
+                  //             },
+                  //             text: 'Verify')
+                  //       ],
+                  //     ),
+                  //   ),
+                 
+                  Expanded(child: cubit.screens[cubit.currentIndex]),
                 ],
               );
             },
@@ -85,6 +90,10 @@ class HomeScreen extends StatelessWidget {
               BottomNavigationBarItem(
                 icon: Icon(Icons.chat),
                 label: 'Chat',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.upload_file),
+                label: 'Post',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.map),

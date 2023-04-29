@@ -56,13 +56,14 @@ Widget defaultTextButton({required Function function, required String text}) {
 
 Widget defaultButton({
   double width = double.infinity,
+  double height = 40,
   required VoidCallback function,
   Color color = Colors.teal,
   required String text,
   bool isUpperCase = true,
 }) {
   return Container(
-    width: width,
+    width: width,height:height ,
     color: color,
     child: MaterialButton(
       onPressed: function,

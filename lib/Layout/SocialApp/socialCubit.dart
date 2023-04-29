@@ -20,22 +20,28 @@ class SocialCubit extends Cubit<SocialStates> {
   List<Text> titles = [
     const Text('Home Feed'),
     const Text('Chats'),
+    const Text(''),
     const Text('Users'),
     const Text('Settings'),
   ];
   List<Widget> screens = [
     FeedsScreen(),
     ChatsScreen(),
+    ChatsScreen(),
     UsersScreen(),
     SettingScreen(),
   ];
-  
+
   void changeBottomNavScreen(int index) {
-    currentIndex = index;
-    emit(ChangeBottomNavState());
+    
+    if (index == 2) {
+      emit(NewPostState());
+    } else {
+      currentIndex = index;
+      emit(ChangeBottomNavState());
+    }
+    
   }
-
-
 
   UserModel? user;
   void getUserData() {

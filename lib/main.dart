@@ -7,7 +7,6 @@ import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
 import 'package:social_appl/Layout/SocialApp/socialStates.dart';
 import 'package:social_appl/Layout/homeScreen.dart';
 import 'package:social_appl/Modules/Login/loginScreen.dart';
-import 'package:social_appl/Modules/Screens/Feeds/feeds_screen.dart';
 import 'package:social_appl/Shared/Compenents/blocobserver.dart';
 import 'package:social_appl/Shared/Compenents/constants.dart';
 import 'package:social_appl/Shared/Network/Local/cache_helper.dart';
@@ -18,14 +17,14 @@ import 'package:social_appl/firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   Bloc.observer = MyBlocObserver();
   await DioHelper.init();
   await CacheHelper.init();
   uId = CacheHelper.getData(key: 'uId');
-  Widget startWidget = uId != null ? LoginScreen() : HomeScreen();
+  Widget startWidget = uId == null ? const LoginScreen() : const HomeScreen();
 
   runApp(MyApp(
     startWidget: startWidget,
@@ -41,14 +40,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => SocialCubit())
+          BlocProvider(create: (context) => SocialCubit()..getUserData())
         ],
         child: BlocConsumer<SocialCubit, SocialStates>(
             listener: (context, state) {},
             builder: (context, state) {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
-                home: FeedsScreen(),
+                home: startWidget,
                 theme: lightTheme,
                 darkTheme: darkTheme,
                 themeMode: ThemeMode.light,

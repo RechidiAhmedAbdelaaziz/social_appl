@@ -51,7 +51,7 @@ class FeedsScreen extends StatelessWidget {
 Widget buildPostItem(BuildContext context) {
   return Card(
     clipBehavior: Clip.antiAliasWithSaveLayer,
-    elevation: 12,
+    elevation: 5,
     margin: EdgeInsets.symmetric(
       horizontal: 8, vertical: 2,
     ),
