@@ -27,7 +27,7 @@ class RegisterScreen extends StatelessWidget {
           if (state is CreatUserSuccessState) {
             CacheHelper.saveData(key: 'uId', value: state.user.uId).then((value) {
               uId = state.user.uId;
-              replaceWith(context: context, widget: HomeScreen());
+              replaceWith(context: context, widget: const HomeScreen());
             });
             
           }

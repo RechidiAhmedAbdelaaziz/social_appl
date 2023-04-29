@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:social_appl/Shared/Compenents/compenents.dart';
 
 class NewPostScreen  extends StatelessWidget {
+  const NewPostScreen({super.key});
+
   
 
   @override

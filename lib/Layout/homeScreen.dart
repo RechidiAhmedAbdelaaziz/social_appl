@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
     return BlocConsumer<SocialCubit, SocialStates>(
       listener: (context, state) {
         if (state is NewPostState) {
-          navigateTo(context: context, widget: NewPostScreen());
+          navigateTo(context: context, widget: const NewPostScreen());
         }
       },
       builder: (context, state) {

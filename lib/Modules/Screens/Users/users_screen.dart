@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class UsersScreen extends StatelessWidget {
+  const UsersScreen({super.key});
+
   
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Users'),
     );
   }

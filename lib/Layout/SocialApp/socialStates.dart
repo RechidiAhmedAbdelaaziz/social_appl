@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 abstract class SocialStates {}
 
 class InitialStates extends SocialStates {}
@@ -25,6 +27,7 @@ class UploadPicErrorState extends SocialStates{}
 class GetUrlPicSuccessState extends SocialStates{}
 class GetUrlPicErrorState extends SocialStates{}
 
+class UpdateDataLoadingState extends SocialStates{}
 class UpdateDataSuccessState extends SocialStates{}
 class UpdateDataErrorState extends SocialStates{}
 

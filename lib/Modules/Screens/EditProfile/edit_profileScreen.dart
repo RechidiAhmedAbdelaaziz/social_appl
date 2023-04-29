@@ -1,12 +1,10 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
 import 'package:social_appl/Layout/SocialApp/socialStates.dart';
-import 'package:social_appl/Modules/Login/loginScreen.dart';
 import 'package:social_appl/Shared/Compenents/compenents.dart';
-import 'package:social_appl/erorrr.dart';
 
 class EditProfileScreen extends StatelessWidget {
   EditProfileScreen({super.key});
@@ -16,9 +14,7 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
-      listener: (context, state) {
-        
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         var user = SocialCubit.get(context).user;
         nameController.text = user!.name!;
@@ -49,10 +45,6 @@ class EditProfileScreen extends StatelessWidget {
                       'bio': bioController.text,
                     },
                   );
-                  if (profileFile != null)
-                    SocialCubit.get(context).uplaodFile(profileFile, 'profile');
-                  if (coverFile != null)
-                    SocialCubit.get(context).uplaodFile(coverFile, 'cover');
                 },
                 icon: const Icon(Icons.save),
                 label: const Text('update')),
@@ -64,6 +56,10 @@ class EditProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: Column(
               children: [
+                if (state is UpdateDataLoadingState) const Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: LinearProgressIndicator(),
+                ),
                 SizedBox(
                   height: 260,
                   child: Stack(
@@ -90,8 +86,7 @@ class EditProfileScreen extends StatelessWidget {
                             ),
                             IconButton(
                                 onPressed: () {
-                                  SocialCubit.get(context).getImage(
-                                      'cover');
+                                  SocialCubit.get(context).getImage('cover');
                                 },
                                 icon: const CircleAvatar(
                                   radius: 18,
@@ -115,13 +110,15 @@ class EditProfileScreen extends StatelessWidget {
                           ),
                           IconButton(
                               onPressed: () {
-                                SocialCubit.get(context).getImage(
-                                    'profile');
+                                SocialCubit.get(context).getImage('profile');
                               },
                               icon: const CircleAvatar(
                                 radius: 13,
                                 backgroundColor: Color.fromRGBO(0, 0, 0, 0.7),
-                                child: Icon(Icons.camera_alt, size: 20,),
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  size: 20,
+                                ),
                               )),
                         ],
                       ),
@@ -155,6 +152,7 @@ class EditProfileScreen extends StatelessWidget {
                     if (value!.length > 200) {
                       return "This bio is too big";
                     }
+                    return null;
                   },
                 ),
                 const SizedBox(
@@ -169,6 +167,7 @@ class EditProfileScreen extends StatelessWidget {
                     if (value?.isEmpty == true) {
                       return "phone number can't be empty";
                     }
+                    return null;
                   },
                 ),
               ],

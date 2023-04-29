@@ -8,6 +8,8 @@ import 'package:social_appl/Modules/Screens/EditProfile/edit_profileScreen.dart'
 import 'package:social_appl/Shared/Compenents/compenents.dart';
 
 class SettingScreen extends StatelessWidget {
+  const SettingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(

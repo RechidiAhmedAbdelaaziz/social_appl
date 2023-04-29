@@ -30,11 +30,11 @@ class SocialCubit extends Cubit<SocialStates> {
     const Text('Settings'),
   ];
   List<Widget> screens = [
-    FeedsScreen(),
-    ChatsScreen(),
-    ChatsScreen(),
-    UsersScreen(),
-    SettingScreen(),
+    const FeedsScreen(),
+    const ChatsScreen(),
+    const ChatsScreen(),
+    const UsersScreen(),
+    const SettingScreen(),
   ];
 
   void changeBottomNavScreen(int index) {
@@ -53,7 +53,6 @@ class SocialCubit extends Cubit<SocialStates> {
       user = UserModel.fromJson(value.data());
       emit(GetUserSuccessState());
     }).catchError((error) {
-      print(error.toString());
       emit(GetUserErrorState(error.toString()));
     });
   }
@@ -66,11 +65,10 @@ class SocialCubit extends Cubit<SocialStates> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       if (type == 'profile') {
-          profileFile = File(pickedFile.path);
-        } else {
-          coverFile = File(pickedFile.path);
-        }
-     
+        profileFile = File(pickedFile.path);
+      } else {
+        coverFile = File(pickedFile.path);
+      }
 
       emit(GetPicSuccessState());
     } else {
@@ -95,8 +93,7 @@ class SocialCubit extends Cubit<SocialStates> {
           .doc(uId)
           .update(update)
           .then((value) {
-
-        getUserData();
+            getUserData();
         emit(UpdatePicsSuccessState());
       }).catchError((error) {
         emit(UpdatePicsErrorState());
@@ -126,13 +123,21 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  void updateData( Map<String, dynamic> update) {
+  void updateData(Map<String, dynamic> update) {
+    emit(UpdateDataLoadingState());
     FirebaseFirestore.instance
         .collection('users')
         .doc(uId)
         .update(update)
         .then((value) {
-      getUserData();
+      if (profileFile != null) {
+        uplaodFile(profileFile, 'profile');
+      }
+      if (coverFile != null) {
+        uplaodFile(coverFile, 'cover');
+      }else {
+        getUserData();
+      }
       emit(UpdateDataSuccessState());
     }).catchError((error) {
       emit(UpdateDataErrorState());
