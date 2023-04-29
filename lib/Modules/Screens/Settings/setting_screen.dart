@@ -33,8 +33,7 @@ class SettingScreen extends StatelessWidget {
                             topRight: Radius.circular(5),
                           ),
                           image: DecorationImage(
-                            image: NetworkImage(
-                                '${user?.cover}'),
+                            image: NetworkImage('${user?.cover}'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -83,10 +82,7 @@ class SettingScreen extends StatelessWidget {
                             ),
                             Text(
                               'Posts',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -105,11 +101,8 @@ class SettingScreen extends StatelessWidget {
                               height: 8,
                             ),
                             Text(
-                              'Images',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                 ,
+                              'Photos',
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -121,18 +114,15 @@ class SettingScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              '77k',
+                              '772k',
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             SizedBox(
                               height: 8,
                             ),
                             Text(
-                              'Followe',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ,
+                              'Followers',
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -144,18 +134,15 @@ class SettingScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              '43',
+                              '543',
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             SizedBox(
                               height: 8,
                             ),
                             Text(
-                              'Images',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ,
+                              'Following',
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),
@@ -167,7 +154,20 @@ class SettingScreen extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: defaultButton(function: () {}, text: 'EDIT PROFILE'),
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      child: Text('Add Post'),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: Icon(
+                      Icons.edit,
+                      size: 16,
+                    ),
                   ),
                 ],
               ),
