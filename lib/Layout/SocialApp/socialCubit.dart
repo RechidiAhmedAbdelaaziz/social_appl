@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 
 import 'dart:io';
-import 'dart:math';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -212,5 +212,17 @@ class SocialCubit extends Cubit<SocialStates> {
   void disappearPic() {
     currentPostFile = null;
     emit(PostImagesState());
+  }
+
+  List<PostModel> posts = [];
+  void getPosts() {
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
+      value.docs.forEach((element) {
+        posts.add(PostModel.fromJson(element.data()));
+      });
+      emit(GetPostsSuccessState());
+    }).catchError((error) {
+      emit(GetPostsErrorState(error.toString()));
+    });
   }
 }

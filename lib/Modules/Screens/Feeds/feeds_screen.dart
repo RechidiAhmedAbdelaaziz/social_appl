@@ -1,61 +1,81 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
+import 'package:social_appl/Layout/SocialApp/socialStates.dart';
+import 'package:social_appl/Moldels/postModel.dart';
 
 class FeedsScreen extends StatelessWidget {
   const FeedsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          Card(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            elevation: 12,
-            margin: const EdgeInsets.all(8),
-            child: Stack(
-              alignment: AlignmentDirectional.bottomEnd,
-              children: [
-                const Image(
-                  image: NetworkImage(
-                      'https://as1.ftcdn.net/v2/jpg/02/71/77/56/1000_F_271775672_yo8ZgraN2IHGbfqP2k0PsLjwvmatUNUJ.jpg'),
-                  fit: BoxFit.cover,
-                  height: 250,
-                  width: double.infinity,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Communicate with people',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: Colors.white),
+    return BlocConsumer<SocialCubit, SocialStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var cubit = SocialCubit.get(context);
+        return ConditionalBuilder(
+          condition: SocialCubit.get(context).posts != [],
+          builder: (context) {
+            return SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    elevation: 12,
+                    margin: const EdgeInsets.all(8),
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      children: [
+                        const Image(
+                          image: NetworkImage(
+                              'https://as1.ftcdn.net/v2/jpg/02/71/77/56/1000_F_271775672_yo8ZgraN2IHGbfqP2k0PsLjwvmatUNUJ.jpg'),
+                          fit: BoxFit.cover,
+                          height: 250,
+                          width: double.infinity,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            'Communicate with people',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => buildPostItem(context,cubit.posts[index]),
+                    itemCount: cubit.posts.length,
+                  ),
+                ],
+              ),
+            );
+          },
+          fallback: (context) => Center(
+            child: CircularProgressIndicator(),
           ),
-          ListView.builder(
-            shrinkWrap: true,physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) => buildPostItem(context),
-            itemCount: 10,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
-Widget buildPostItem(BuildContext context) {
+Widget buildPostItem(BuildContext context,PostModel post) {
   return Card(
     clipBehavior: Clip.antiAliasWithSaveLayer,
     elevation: 5,
     margin: EdgeInsets.symmetric(
-      horizontal: 8, vertical: 2,
+      horizontal: 8,
+      vertical: 2,
     ),
     child: Padding(
       padding: const EdgeInsets.all(10.0),
@@ -67,7 +87,7 @@ Widget buildPostItem(BuildContext context) {
               CircleAvatar(
                 radius: 15,
                 backgroundImage: NetworkImage(
-                    'https://as2.ftcdn.net/v2/jpg/05/63/59/55/1000_F_563595565_MetcUtGuniCNyKZMRYZPVuZ7oXSvhoJU.jpg'),
+                    '${post.image}'),
               ),
               SizedBox(
                 width: 15,
@@ -79,7 +99,7 @@ Widget buildPostItem(BuildContext context) {
                     Row(
                       children: [
                         Text(
-                          'User Name  ',
+                          '${post.name}  ',
                           style: TextStyle(
                             fontSize: 20,
                             height: 1.3,
@@ -93,7 +113,7 @@ Widget buildPostItem(BuildContext context) {
                       ],
                     ),
                     Text(
-                      'January 05, 2023 at 22:33',
+                      '${post.dateTime}',
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
@@ -120,7 +140,7 @@ Widget buildPostItem(BuildContext context) {
             color: Colors.grey[300],
           ),
           Text(
-            'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available',
+            '${post.text}',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           Container(
@@ -139,7 +159,7 @@ Widget buildPostItem(BuildContext context) {
                       padding: EdgeInsets.zero,
                       onPressed: () {},
                       child: Text(
-                        '#Software',
+                        '${post.tags}',
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall
@@ -156,7 +176,7 @@ Widget buildPostItem(BuildContext context) {
               borderRadius: BorderRadius.circular(5),
               image: DecorationImage(
                 image: NetworkImage(
-                    'https://as1.ftcdn.net/v2/jpg/02/71/77/56/1000_F_271775672_yo8ZgraN2IHGbfqP2k0PsLjwvmatUNUJ.jpg'),
+                    '${post.postImage}'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -224,13 +244,13 @@ Widget buildPostItem(BuildContext context) {
             color: Colors.grey[300],
           ),
           Padding(
-            padding: const EdgeInsetsDirectional.only(bottom: 4,start: 8),
+            padding: const EdgeInsetsDirectional.only(bottom: 4, start: 8),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 15,
                   backgroundImage: NetworkImage(
-                      'https://as2.ftcdn.net/v2/jpg/05/63/59/55/1000_F_563595565_MetcUtGuniCNyKZMRYZPVuZ7oXSvhoJU.jpg'),
+                      '${post.image}'),
                 ),
                 SizedBox(
                   width: 15,
