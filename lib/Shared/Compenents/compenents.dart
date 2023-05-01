@@ -50,9 +50,7 @@ Widget defaultFromFiled({
       ),
     );
 
-Widget defaultTextButton({required Function function, required String text}) {
-  return TextButton(onPressed: function(), child: Text(text));
-}
+
 
 Widget defaultButton({
   double width = double.infinity,

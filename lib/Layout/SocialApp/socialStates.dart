@@ -33,3 +33,10 @@ class UpdateDataErrorState extends SocialStates{}
 
 class UpdatePicsSuccessState extends SocialStates{}
 class UpdatePicsErrorState extends SocialStates{}
+
+
+class CreatPostLoadingState extends SocialStates{}
+class CreatPostSuccessState extends SocialStates{}
+class CreatPostErrorState extends SocialStates{}
+
+class PostImagesState extends SocialStates{}

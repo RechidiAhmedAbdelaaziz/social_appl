@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -14,6 +15,7 @@ import 'package:social_appl/Modules/Screens/Chats/chats_screen.dart';
 import 'package:social_appl/Modules/Screens/Feeds/feeds_screen.dart';
 import 'package:social_appl/Modules/Screens/Settings/setting_screen.dart';
 import 'package:social_appl/Modules/Screens/Users/users_screen.dart';
+import 'package:social_appl/Moldels/postModel.dart';
 import 'package:social_appl/Moldels/userModel.dart';
 import 'package:social_appl/Shared/Compenents/constants.dart';
 
@@ -59,13 +61,17 @@ class SocialCubit extends Cubit<SocialStates> {
 
   File? profileFile;
   File? coverFile;
+  File? currentPostFile;
+
   var picker = ImagePicker();
-  Future getImage(String type) async {
+  void getImage(String type) async {
     emit(GetPicLoadingState());
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       if (type == 'profile') {
         profileFile = File(pickedFile.path);
+      } else if (type == 'post') {
+        currentPostFile = File(pickedFile.path);
       } else {
         coverFile = File(pickedFile.path);
       }
@@ -93,7 +99,7 @@ class SocialCubit extends Cubit<SocialStates> {
           .doc(uId)
           .update(update)
           .then((value) {
-            getUserData();
+        getUserData();
         emit(UpdatePicsSuccessState());
       }).catchError((error) {
         emit(UpdatePicsErrorState());
@@ -135,12 +141,76 @@ class SocialCubit extends Cubit<SocialStates> {
       }
       if (coverFile != null) {
         uplaodFile(coverFile, 'cover');
-      }else {
+      } else {
         getUserData();
       }
       emit(UpdateDataSuccessState());
     }).catchError((error) {
       emit(UpdateDataErrorState());
     });
+  }
+
+  void creatPost({
+    required String dateTime,
+    required String text,
+    required String? tags,
+  }) {
+    emit(CreatPostLoadingState());
+    PostModel post = PostModel(
+      name: user?.name,
+      uId: uId,
+      image: user?.image,
+      postImage: '',
+      dateTime: dateTime,
+      tags: tags,
+      text: text,
+    );
+    if (currentPostFile != null) {
+      emit(UploadPicLoadingState());
+      firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('posts/${Uri.file(currentPostFile!.path).pathSegments.last}')
+          .putFile(currentPostFile!)
+          .then((value) {
+        value.ref.getDownloadURL().then((value) {
+          post = PostModel(
+            name: user?.name,
+            uId: uId,
+            image: user?.image,
+            postImage: value,
+            dateTime: dateTime,
+            tags: tags,
+            text: text,
+          );
+          FirebaseFirestore.instance
+              .collection('posts')
+              .add(post.toMap())
+              .then((value) {
+            emit(CreatPostSuccessState());
+          }).catchError((error) {
+            emit(CreatPostErrorState());
+          });
+          emit(UploadPicSuccessState());
+        }).catchError((error) {
+          emit(UploadPicErrorState());
+        });
+      }).catchError((error) {
+        emit(UploadPicErrorState());
+      });
+    } else {
+      FirebaseFirestore.instance
+          .collection('posts')
+          .add(post.toMap())
+          .then((value) {
+        emit(CreatPostSuccessState());
+      }).catchError((error) {
+        emit(CreatPostErrorState());
+      });
+    }
+  }
+
+  void disappearPic() {
+    currentPostFile = null;
+    emit(PostImagesState());
   }
 }
