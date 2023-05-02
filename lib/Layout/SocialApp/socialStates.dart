@@ -32,6 +32,11 @@ class UploadPicSuccessState extends SocialStates{}
 class UploadPicErrorState extends SocialStates{}
 
 
+class GetLikesSuccessState extends SocialStates{}
+class GetLikesErrorState extends SocialStates{}
+
+
+
 class GetUrlPicSuccessState extends SocialStates{}
 class GetUrlPicErrorState extends SocialStates{}
 

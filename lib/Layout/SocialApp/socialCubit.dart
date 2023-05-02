@@ -1,7 +1,6 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print
 
 import 'dart:io';
-
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -186,7 +185,15 @@ class SocialCubit extends Cubit<SocialStates> {
               .collection('posts')
               .add(post.toMap())
               .then((value) {
-            emit(CreatPostSuccessState());
+            FirebaseFirestore.instance
+                .collection('posts')
+                .doc(value.id)
+                .update({'id': value.id}).then((value) {
+              getPosts();
+              emit(CreatPostSuccessState());
+            }).catchError((error) {
+              emit(CreatPostErrorState());
+            });
           }).catchError((error) {
             emit(CreatPostErrorState());
           });
@@ -202,7 +209,15 @@ class SocialCubit extends Cubit<SocialStates> {
           .collection('posts')
           .add(post.toMap())
           .then((value) {
-        emit(CreatPostSuccessState());
+        FirebaseFirestore.instance
+            .collection('posts')
+            .doc(value.id)
+            .update({'id': value.id}).then((value) {
+          getPosts();
+          emit(CreatPostSuccessState());
+        }).catchError((error) {
+          emit(CreatPostErrorState());
+        });
       }).catchError((error) {
         emit(CreatPostErrorState());
       });
@@ -217,12 +232,69 @@ class SocialCubit extends Cubit<SocialStates> {
   List<PostModel> posts = [];
   void getPosts() {
     FirebaseFirestore.instance.collection('posts').get().then((value) {
-      value.docs.forEach((element) {
-        posts.add(PostModel.fromJson(element.data()));
-      });
+      posts = [];
+      for (var element in value.docs) {
+        var currentPost = element.data();
+        currentPost.addAll({'id': element.id});
+        posts.add(PostModel.fromJson(currentPost));
+      }
       emit(GetPostsSuccessState());
     }).catchError((error) {
+      print('error is >>> ${error.toString()}');
       emit(GetPostsErrorState(error.toString()));
+    });
+  }
+
+  void likePost({required String postId}) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('Likes')
+        .doc(user?.uId)
+        .set({
+      'like': false,
+    }).then((value) {
+      FirebaseFirestore.instance
+          .collection('posts')
+          .doc(postId)
+          .collection('Likes')
+          .get()
+          .then((value) {
+        FirebaseFirestore.instance
+            .collection('posts')
+            .doc(postId)
+            .update({'likes': value.docs.length}).then((value) {
+          getPosts();
+          emit(GetLikesSuccessState());
+        });
+      });
+    }).catchError((error) {
+      emit(GetLikesErrorState());
+    });
+  }
+
+  void putComment(String comment, String postId) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .doc(user?.uId)
+        .set({'comment': comment}).then((value) {
+      var comments = [];
+      FirebaseFirestore.instance
+          .collection('posts')
+          .doc(postId)
+          .collection('comments')
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          comments.add(element.get('comment'));
+        }
+        FirebaseFirestore.instance
+            .collection('posts')
+            .doc(postId)
+            .update({'comments': comments});
+      });
     });
   }
 }

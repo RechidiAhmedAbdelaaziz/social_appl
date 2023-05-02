@@ -20,6 +20,9 @@ class NewPostScreen extends StatelessWidget {
         }
         if (state is CreatPostSuccessState || state is CreatPostErrorState) {
           onProgress = false;
+          textController.text = '';
+          SocialCubit.get(context).disappearPic();
+          Navigator.pop(context);
         }
       },
       builder: (context, state) {

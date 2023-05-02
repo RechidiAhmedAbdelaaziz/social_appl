@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
 import 'package:social_appl/Layout/SocialApp/socialStates.dart';
+import 'package:social_appl/Modules/Screens/Feeds/post_screen.dart';
 import 'package:social_appl/Moldels/postModel.dart';
+import 'package:social_appl/Shared/Compenents/compenents.dart';
 
 class FeedsScreen extends StatelessWidget {
   const FeedsScreen({super.key});
@@ -17,7 +19,7 @@ class FeedsScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = SocialCubit.get(context);
         return ConditionalBuilder(
-          condition: SocialCubit.get(context).posts != [],
+          condition: SocialCubit.get(context).user != null,
           builder: (context) {
             return SingleChildScrollView(
               physics: BouncingScrollPhysics(),
@@ -53,23 +55,22 @@ class FeedsScreen extends StatelessWidget {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => buildPostItem(context,cubit.posts[index]),
+                    itemBuilder: (context, index) =>
+                        buildPostItem(context, cubit.posts[index]),
                     itemCount: cubit.posts.length,
                   ),
                 ],
               ),
             );
           },
-          fallback: (context) => Center(
-            child: CircularProgressIndicator(),
-          ),
+          fallback: (context) => CircularProgressIndicator(),
         );
       },
     );
   }
 }
 
-Widget buildPostItem(BuildContext context,PostModel post) {
+Widget buildPostItem(BuildContext context, PostModel post) {
   return Card(
     clipBehavior: Clip.antiAliasWithSaveLayer,
     elevation: 5,
@@ -86,8 +87,7 @@ Widget buildPostItem(BuildContext context,PostModel post) {
             children: [
               CircleAvatar(
                 radius: 15,
-                backgroundImage: NetworkImage(
-                    '${post.image}'),
+                backgroundImage: NetworkImage('${post.image}'),
               ),
               SizedBox(
                 width: 15,
@@ -169,18 +169,18 @@ Widget buildPostItem(BuildContext context,PostModel post) {
               ],
             ),
           ),
-          Container(
-            height: 200,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              image: DecorationImage(
-                image: NetworkImage(
-                    '${post.postImage}'),
-                fit: BoxFit.cover,
+          if (post.postImage?.isNotEmpty == true)
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                image: DecorationImage(
+                  image: NetworkImage('${post.postImage}'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Row(
@@ -201,7 +201,7 @@ Widget buildPostItem(BuildContext context,PostModel post) {
                             width: 5,
                           ),
                           Text(
-                            '1200',
+                            '${post.likes}',
                             style: Theme.of(context).textTheme.bodySmall,
                           )
                         ],
@@ -226,7 +226,7 @@ Widget buildPostItem(BuildContext context,PostModel post) {
                             width: 5,
                           ),
                           Text(
-                            '1200',
+                            '${post.comments != null ? post.comments?.length : 0}',
                             style: Theme.of(context).textTheme.bodySmall,
                           )
                         ],
@@ -249,15 +249,19 @@ Widget buildPostItem(BuildContext context,PostModel post) {
               children: [
                 CircleAvatar(
                   radius: 15,
-                  backgroundImage: NetworkImage(
-                      '${post.image}'),
+                  backgroundImage:
+                      NetworkImage('${SocialCubit.get(context).user?.image}'),
                 ),
                 SizedBox(
                   width: 15,
                 ),
                 Expanded(
                   child: TextFormField(
-                    onTap: () {},
+                    onFieldSubmitted: (value) {
+                      SocialCubit.get(context).putComment(value, post.id!);
+                      navigateTo(
+                          context: context, widget: PostScreen(post: post));
+                    },
                     decoration: InputDecoration(
                       disabledBorder: InputBorder.none,
                       border: InputBorder.none,
@@ -266,7 +270,9 @@ Widget buildPostItem(BuildContext context,PostModel post) {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    SocialCubit.get(context).likePost(postId: post.id!);
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 12,
