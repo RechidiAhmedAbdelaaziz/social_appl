@@ -15,7 +15,9 @@ class FeedsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        
+      },
       builder: (context, state) {
         var cubit = SocialCubit.get(context);
         return ConditionalBuilder(
@@ -63,7 +65,7 @@ class FeedsScreen extends StatelessWidget {
               ),
             );
           },
-          fallback: (context) => CircularProgressIndicator(),
+          fallback: (context) => Center(child: CircularProgressIndicator()),
         );
       },
     );
@@ -259,8 +261,7 @@ Widget buildPostItem(BuildContext context, PostModel post) {
                   child: TextFormField(
                     onFieldSubmitted: (value) {
                       SocialCubit.get(context).putComment(value, post.id!);
-                      navigateTo(
-                          context: context, widget: PostScreen(post: post));
+                     
                     },
                     decoration: InputDecoration(
                       disabledBorder: InputBorder.none,

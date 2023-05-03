@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:social_appl/Modules/Screens/Chats/chats_screen.dart';
 import 'package:social_appl/Modules/Screens/Feeds/feeds_screen.dart';
 import 'package:social_appl/Modules/Screens/Settings/setting_screen.dart';
 import 'package:social_appl/Modules/Screens/Users/users_screen.dart';
+import 'package:social_appl/Moldels/messageModel.dart';
 import 'package:social_appl/Moldels/postModel.dart';
 import 'package:social_appl/Moldels/userModel.dart';
 import 'package:social_appl/Shared/Compenents/constants.dart';
@@ -141,7 +143,7 @@ class SocialCubit extends Cubit<SocialStates> {
       if (coverFile != null) {
         uplaodFile(coverFile, 'cover');
       } else {
-        getUserData();
+        getAllUsers();
       }
       emit(UpdateDataSuccessState());
     }).catchError((error) {
@@ -294,7 +296,81 @@ class SocialCubit extends Cubit<SocialStates> {
             .collection('posts')
             .doc(postId)
             .update({'comments': comments});
+        emit(PutCommentSuccessState());
       });
+    });
+  }
+
+  List<UserModel> users = [];
+  void getAllUsers() {
+    emit(GetAllUserLoadingState());
+    FirebaseFirestore.instance.collection('users').get().then((value) {
+      value.docs.forEach((element) {
+        if (element.data()['uId'] == uId)
+          user = UserModel.fromJson(element.data()); else
+        users.add(UserModel.fromJson(element.data()));
+      });
+      emit(GetAllUserSuccessState());
+    }).catchError((error) {
+      emit(GetAllUserErrorState(error.toString()));
+    });
+  }
+
+  void sendMessage({
+    required String reciverId,
+    required String text,
+    required String dateTime,
+  }) {
+    MessageModel message = MessageModel(
+      senderId: user?.uId,
+      reciverId: reciverId,
+      dateTime: dateTime,
+      text: text,
+    );
+    emit(SendMessageLoadingState());
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uId)
+        .collection('chats')
+        .doc(reciverId)
+        .collection('messages')
+        .add(message.toMap())
+        .then((value) {
+      emit(SendMessageSuccessState());
+    }).catchError((error) {
+      emit(SendMessageErrorState());
+    });
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(reciverId)
+        .collection('chats')
+        .doc(user?.uId)
+        .collection('messages')
+        .add(message.toMap())
+        .then((value) {
+      emit(ReciveMessageSuccessState());
+    }).catchError((error) {
+      emit(ReciveMessageErrorState());
+    });
+  }
+
+  List<MessageModel> messages = [];
+  void getMeessages({required String reciverId}) {
+    
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uId)
+        .collection('chats')
+        .doc(reciverId)
+        .collection('messages').orderBy('dateTime')
+        .snapshots()
+        .listen((event) {
+          messages = [];
+      event.docs.forEach((element) {
+        messages.add(MessageModel.fromJson(element.data()));
+      });
+      emit(GetMessagesSuccessState());
     });
   }
 }

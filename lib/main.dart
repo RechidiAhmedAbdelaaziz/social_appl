@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
@@ -20,6 +21,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  var token = await FirebaseMessaging.instance.getToken(); //token of device
+  print(token);
+  FirebaseMessaging.onMessage.listen((event) {});
+
   Bloc.observer = MyBlocObserver();
   await DioHelper.init();
   await CacheHelper.init();
@@ -42,7 +47,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
               create: (context) => SocialCubit()
-                ..getUserData()
+                ..getAllUsers()
                 ..getPosts())
         ],
         child: BlocConsumer<SocialCubit, SocialStates>(
