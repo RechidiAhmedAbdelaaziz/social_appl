@@ -3,6 +3,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_appl/Layout/SocialApp/socialCubit.dart';
 import 'package:social_appl/Layout/homeScreen.dart';
 import 'package:social_appl/Modules/Login/LoginCubit/loginCubit.dart';
 import 'package:social_appl/Modules/Login/LoginCubit/loginStates.dart';
@@ -25,6 +26,7 @@ class LoginScreen extends StatelessWidget {
           if (state is LoginSuccessState) {
             CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
               uId = state.uId;
+              SocialCubit.get(context).getAllUsers();
               replaceWith(context: context, widget: const HomeScreen());
             });
           }
